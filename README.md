@@ -4,7 +4,6 @@ This repository contains the student-facing activities for Session 1 of **EDPY 5
 
 The site includes:
 
-- a downloadable PowerPoint lecture deck;
 - a launch point for the approved Research Thinking and AI Use Baseline form;
 - **Activity 1: What Counts as Research?** with facilitator debrief prompts;
 - **Activity 2: One Problem, Three Possible Studies** with a printable study-design workspace;
@@ -40,7 +39,6 @@ The `.nojekyll` file is included so GitHub Pages serves the files exactly as pro
 - `styles.css` — responsive, print-friendly course styling
 - `app.js` — activity interactions; no analytics or response storage
 - `config.js` — approved form links
-- `resources/EDPY_501_Session_1_Research_Thinking_and_AI_Literacy.pptx` — PowerPoint lecture deck
 - `.github/workflows/pages.yml` — automatic GitHub Pages deployment
 - `forms/baseline-form-blueprint.md` — questions and setup notes for the diagnostic
 - `forms/exit-ticket-form-blueprint.md` — four closing reflection questions
