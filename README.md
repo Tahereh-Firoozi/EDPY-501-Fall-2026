@@ -4,7 +4,7 @@ This repository contains the student-facing activities for Session 1 of **EDPY 5
 
 The site includes:
 
-- a downloadable PowerPoint lecture deck with speaker notes;
+- a downloadable PowerPoint lecture deck;
 - a launch point for the approved Research Thinking and AI Use Baseline form;
 - **Activity 1: What Counts as Research?** with facilitator debrief prompts;
 - **Activity 2: One Problem, Three Possible Studies** with a printable study-design workspace;
