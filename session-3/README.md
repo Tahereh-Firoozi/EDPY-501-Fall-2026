@@ -4,9 +4,9 @@ Static, dependency-free classroom practice activity. Open `index.html` through t
 
 ## Teaching sequence
 
-Read three original teaching summaries based on the instructor-provided PDFs. Each separates prior literature from the focal study's methods and findings. Answer ten single-choice questions with targeted incorrect-answer hints and correct-answer explanations. Questions 1–3 fill literature gaps, 4–6 fill designs, 7–9 fill outcomes/findings, and 10 unlocks cross-study synthesis. Context and limitations are supplied in the matrix.
+Read three original teaching summaries based on the instructor-provided PDFs. Each separates prior literature from the focal study's methods and findings. Students start with the matrix and choose any empty study cell. Each opens an accessible dialog with a plain-language question, a short research-term reminder, the relevant reading, targeted retry hints and an explanation. Completed cells can be reopened. Nine study cells cover gaps, designs and findings; only after all nine are filled does the cross-study synthesis question become available. Context and limitations are supplied.
 
-Local browser storage preserves completion and first-attempt performance. Reset requires confirmation. Printing supports the matrix in landscape format. This is self-study practice, not authenticated assessment: students can inspect the answer key in the JavaScript, and instructors do not receive responses.
+Local browser storage preserves completion. There is no displayed score or timer. Existing v1 completion is preserved; older first-attempt scores are discarded when progress is next saved. Reset requires confirmation. Native dialog focus containment, Escape/close support, focus restoration to the selected cell, and reduced-motion styling support keyboard and assistive-technology use. Printing supports the matrix in landscape format. This is self-study practice, not authenticated assessment: students can inspect the answer key in the JavaScript, and instructors do not receive responses.
 
 ## Sources and scope
 
