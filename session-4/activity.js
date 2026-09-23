@@ -47,7 +47,6 @@ const steps = [...document.querySelectorAll(".step")];
 const issueList = document.getElementById("issue-list");
 const progress = document.getElementById("review-progress");
 const count = document.getElementById("answered-count");
-const reviewButton = document.getElementById("review-responses");
 const summary = document.getElementById("response-summary");
 const summaryContent = document.getElementById("summary-content");
 const readConfirm = document.getElementById("read-confirm");
@@ -113,7 +112,7 @@ function updateProgress(){
   });
   progress.value = answered;
   count.textContent = `${answered} / ${issues.length}`;
-  reviewButton.disabled = answered !== issues.length;
+  document.querySelectorAll(".review-global").forEach(btn => btn.disabled = answered === 0);
 }
 issueList.addEventListener("change", e => {
   const card = e.target.closest(".issue-card");
@@ -145,23 +144,46 @@ readConfirm.addEventListener("change", () => {
   toReview.disabled = !readConfirm.checked;
 });
 
-reviewButton.addEventListener("click", () => {
+function renderReviewSummary(){
+  const hasAny = Object.values(state.responses).some(r => r && (r.choice || (r.fix || "").trim()));
+  if (!hasAny){
+    announce("You have not entered any ethics-review responses yet.");
+    showPage("review");
+    return;
+  }
   summaryContent.innerHTML = "";
   issues.forEach((issue, i) => {
-    const r = state.responses[i+1];
+    const r = state.responses[i+1] || {};
     const div = document.createElement("div");
     div.className = "summary-item";
-    div.innerHTML = `<strong>${i+1}. ${issue.title}</strong><span><b>Your decision:</b> ${r.choice==="yes"?"Yes — problem present":"No — not a problem in this proposal"}</span>${r.choice==="yes"?`<p><b>Your proposed fix:</b> ${escapeHtml(r.fix)}</p>`:""}`;
+    const decision = r.choice === "yes" ? "Yes — problem present" : r.choice === "no" ? "No — not a problem in this proposal" : "Not answered";
+    div.innerHTML = `<strong>${i+1}. ${issue.title}</strong><span><b>Your decision:</b> ${decision}</span>${r.choice==="yes"?`<p><b>Your proposed fix:</b> ${escapeHtml(r.fix || "")}</p>`:""}`;
     summaryContent.appendChild(div);
   });
+  showPage("review");
   summary.hidden = false;
-  summary.scrollIntoView({behavior:"smooth",block:"start"});
-});
+  setTimeout(() => summary.scrollIntoView({behavior:"smooth",block:"start"}), 50);
+}
+document.querySelectorAll(".review-global").forEach(btn => btn.addEventListener("click", renderReviewSummary));
 document.getElementById("edit-responses").addEventListener("click", () => {
   summary.hidden = true;
   document.querySelector(".issue-card").scrollIntoView({behavior:"smooth"});
 });
 document.getElementById("print-responses").addEventListener("click", () => window.print());
+
+function announce(message){
+  document.querySelectorAll(".action-status").forEach(el => {
+    el.textContent = message;
+    el.classList.add("show");
+  });
+}
+document.querySelectorAll(".save-global").forEach(btn => btn.addEventListener("click", () => {
+  saveState(state);
+  announce("Saved on this browser. You can close the page and continue later on this same browser/device.");
+}));
+document.querySelectorAll(".submit-global").forEach(btn => btn.addEventListener("click", () => {
+  announce("Submission is not connected yet. Your work is still saved on this browser.");
+}));
 document.getElementById("reset-activity").addEventListener("click", () => {
   if (!confirm("Clear all Session 4 responses saved in this browser?")) return;
   localStorage.removeItem(STORAGE_KEY);
