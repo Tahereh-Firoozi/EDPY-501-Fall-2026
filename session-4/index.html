@@ -25,6 +25,15 @@
     </div>
   </div>
 
+  <div class="identity-bar" aria-label="Student identification">
+    <div>
+      <strong>Your CCID</strong>
+      <span>Enter it once. It will be saved with your work and included only when you submit.</span>
+    </div>
+    <label for="student-ccid" class="sr-only">CCID</label>
+    <input id="student-ccid" type="text" autocomplete="username" maxlength="40" placeholder="Enter your CCID">
+  </div>
+
   <main id="main">
     <section class="page active" id="instructions" aria-labelledby="intro-title">
       <div class="hero-grid">
@@ -78,7 +87,7 @@
       <div class="response-actions">
         <button class="secondary review-global" type="button">Review my responses</button>
         <button class="secondary save-global" type="button">Save my responses</button>
-        <button class="primary submit-global" type="button" disabled title="Private submission storage has not yet been connected.">Submit</button>
+        <button class="primary submit-global" type="button" disabled>Submit</button>
       </div>
       <p class="action-status" aria-live="polite"></p>
       <div class="page-actions end">
@@ -217,7 +226,7 @@
       <div class="response-actions">
         <button class="secondary review-global" type="button">Review my responses</button>
         <button class="secondary save-global" type="button">Save my responses</button>
-        <button class="primary submit-global" type="button" disabled title="Private submission storage has not yet been connected.">Submit</button>
+        <button class="primary submit-global" type="button" disabled>Submit</button>
       </div>
       <p class="action-status" aria-live="polite"></p>
       <div class="page-actions">
@@ -272,7 +281,7 @@
       <div class="response-actions">
         <button class="secondary review-global" type="button">Review my responses</button>
         <button class="secondary save-global" type="button">Save my responses</button>
-        <button class="primary submit-global" type="button" disabled title="Private submission storage has not yet been connected.">Submit</button>
+        <button class="primary submit-global" type="button" disabled>Submit</button>
       </div>
       <p class="action-status" aria-live="polite"></p>
       <div class="page-actions">
@@ -280,6 +289,8 @@
       </div>
     </section>
   </main>
+
+  <iframe id="submission-target" name="submission-target" title="Submission result" hidden></iframe>
 
   <footer>
     <p><strong>EDPY 501 · Dr. Tahereh Firoozi · Session 4</strong></p>
