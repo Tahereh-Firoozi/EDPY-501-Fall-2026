@@ -51,6 +51,10 @@ const summary = document.getElementById("response-summary");
 const summaryContent = document.getElementById("summary-content");
 const readConfirm = document.getElementById("read-confirm");
 const toReview = document.getElementById("to-review");
+const ccidInput = document.getElementById("student-ccid");
+const submitButtons = [...document.querySelectorAll(".submit-global")];
+const submissionTarget = document.getElementById("submission-target");
+const JOTFORM_ACTION = "https://submit.jotform.com/submit/262647079374064";
 
 function loadState(){
   try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
@@ -59,6 +63,8 @@ function loadState(){
 function saveState(state){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
 let state = loadState();
 if (!state.responses) state.responses = {};
+if (!state.ccid) state.ccid = "";
+ccidInput.value = state.ccid;
 if (state.readConfirmed) { readConfirm.checked = true; toReview.disabled = false; }
 
 issues.forEach((issue, i) => {
@@ -113,6 +119,11 @@ function updateProgress(){
   progress.value = answered;
   count.textContent = `${answered} / ${issues.length}`;
   document.querySelectorAll(".review-global").forEach(btn => btn.disabled = answered === 0);
+  const readyToSubmit = answered === issues.length && Boolean((state.ccid || "").trim());
+  submitButtons.forEach(btn => {
+    btn.disabled = !readyToSubmit;
+    btn.title = readyToSubmit ? "Submit your completed activity" : "Complete all 10 items and enter your CCID first.";
+  });
 }
 issueList.addEventListener("change", e => {
   const card = e.target.closest(".issue-card");
@@ -142,6 +153,12 @@ readConfirm.addEventListener("change", () => {
   state.readConfirmed = readConfirm.checked;
   saveState(state);
   toReview.disabled = !readConfirm.checked;
+});
+
+ccidInput.addEventListener("input", () => {
+  state.ccid = ccidInput.value.trim();
+  saveState(state);
+  updateProgress();
 });
 
 function renderReviewSummary(){
@@ -179,10 +196,86 @@ function announce(message){
 }
 document.querySelectorAll(".save-global").forEach(btn => btn.addEventListener("click", () => {
   saveState(state);
-  announce("Saved on this browser. You can close the page and continue later on this same browser/device.");
+  announce("Saved on this browser, including your CCID and current responses. You can continue later on this same browser/device.");
 }));
-document.querySelectorAll(".submit-global").forEach(btn => btn.addEventListener("click", () => {
-  announce("Submission is not connected yet. Your work is still saved on this browser.");
+function buildSubmissionForm(){
+  const form = document.createElement("form");
+  form.method = "post";
+  form.action = JOTFORM_ACTION;
+  form.target = "submission-target";
+  form.hidden = true;
+
+  const fields = {
+    "formID": "262647079374064",
+    "simple_spc": "262647079374064-262647079374064",
+    "website": "",
+    "q2_textbox0": state.ccid || "",
+    "q23_textbox21": window.location.href,
+    "q24_textbox22": "session4-github-v2"
+  };
+
+  issues.forEach((_, i) => {
+    const n = i + 1;
+    const r = state.responses[n] || {};
+    const decisionNames = {
+      1:"q3_textbox1",2:"q5_textbox3",3:"q7_textbox5",4:"q9_textbox7",5:"q11_textbox9",
+      6:"q13_textbox11",7:"q15_textbox13",8:"q17_textbox15",9:"q19_textbox17",10:"q21_textbox19"
+    };
+    const fixNames = {
+      1:"q4_textarea2",2:"q6_textarea4",3:"q8_textarea6",4:"q10_textarea8",5:"q12_textarea10",
+      6:"q14_textarea12",7:"q16_textarea14",8:"q18_textarea16",9:"q20_textarea18",10:"q22_textarea20"
+    };
+    fields[decisionNames[n]] = r.choice || "";
+    fields[fixNames[n]] = r.fix || "";
+  });
+
+  Object.entries(fields).forEach(([name,value]) => {
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = name;
+    input.value = value;
+    form.appendChild(input);
+  });
+  document.body.appendChild(form);
+  return form;
+}
+
+let submissionPending = false;
+submissionTarget.addEventListener("load", () => {
+  if (!submissionPending) return;
+  submissionPending = false;
+  state.submitted = true;
+  state.submittedAt = new Date().toISOString();
+  saveState(state);
+  announce("Submitted successfully. Your responses and CCID were sent to the private course submission record.");
+  submitButtons.forEach(btn => {
+    btn.textContent = "Submitted ✓";
+    btn.disabled = true;
+  });
+});
+
+submitButtons.forEach(btn => btn.addEventListener("click", () => {
+  const answered = issues.filter((_, i) => {
+    const r = state.responses[i+1] || {};
+    return r.choice === "no" || (r.choice === "yes" && (r.fix || "").trim());
+  }).length;
+  if (!(state.ccid || "").trim()){
+    announce("Enter your CCID at the top of the page before submitting.");
+    ccidInput.focus();
+    return;
+  }
+  if (answered !== issues.length){
+    announce("Complete all 10 ethics-review items before submitting.");
+    showPage("review");
+    return;
+  }
+  if (!confirm("Submit your completed responses under CCID " + state.ccid + "?")) return;
+  saveState(state);
+  announce("Submitting…");
+  submissionPending = true;
+  const form = buildSubmissionForm();
+  form.submit();
+  setTimeout(() => form.remove(), 1500);
 }));
 document.getElementById("reset-activity").addEventListener("click", () => {
   if (!confirm("Clear all Session 4 responses saved in this browser?")) return;
