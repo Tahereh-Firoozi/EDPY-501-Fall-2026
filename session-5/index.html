@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="EDPY 501 practice exercise on the five parts of a research introduction.">
+  <title>Build a Research Introduction | EDPY 501</title>
+  <style>
+    :root { color-scheme: light; --green:#124735; --green2:#1f6149; --gold:#efc44f; --ink:#202b28; --muted:#4f625b; --line:#cad8d0; --paper:#fff; --wash:#f4f7f3; --bad:#8b3025; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--wash); color:var(--ink); font:17px/1.55 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; }
+    a { color:var(--green2); text-underline-offset:3px; }
+    a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline:3px solid #b38100; outline-offset:3px; }
+    .skip { position:absolute; top:-80px; left:12px; z-index:5; background:#fff; padding:8px 14px; }
+    .skip:focus { top:12px; }
+    .top { background:var(--green); color:#fff; border-bottom:5px solid var(--gold); }
+    .top-inner { max-width:1040px; margin:auto; padding:14px 22px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+    .top a { color:#fff; text-decoration:none; font-weight:750; letter-spacing:.04em; }
+    .top span { font-size:.82rem; letter-spacing:.08em; text-transform:uppercase; }
+    main { max-width:1040px; margin:0 auto; padding:34px 22px 54px; }
+    .eyebrow { font-size:.78rem; font-weight:800; letter-spacing:.13em; text-transform:uppercase; color:var(--green2); margin:0 0 8px; }
+    h1 { font-size:clamp(2rem,4.8vw,3.1rem); line-height:1.12; color:var(--green); margin:0 0 12px; letter-spacing:-.035em; }
+    h2 { color:var(--green); line-height:1.25; margin:0 0 12px; font-size:1.35rem; }
+    h3 { margin:0 0 7px; font-size:1.05rem; color:var(--green); }
+    p { margin:0 0 12px; }
+    .lead { max-width:750px; font-size:1.1rem; }
+    .meta { display:flex; flex-wrap:wrap; gap:8px; margin:16px 0 27px; }
+    .meta span { background:#e4eee7; color:var(--green); border:1px solid #cadace; padding:5px 11px; border-radius:99px; font-size:.83rem; font-weight:700; }
+    .card { background:var(--paper); border:1px solid var(--line); border-radius:14px; box-shadow:0 5px 18px #123e2810; padding:24px; margin:18px 0; }
+    .guide { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:9px; margin:18px 0 0; padding:0; list-style:none; }
+    .guide li { border-top:4px solid var(--gold); background:var(--wash); padding:11px 12px; min-height:108px; font-size:.88rem; line-height:1.38; }
+    .guide strong { display:block; color:var(--green); margin-bottom:5px; }
+    .note { color:var(--muted); font-size:.92rem; }
+    .example { background:#f8f7f0; border-left:5px solid var(--gold); padding:15px 17px; margin:16px 0 18px; }
+    .example p { display:grid; grid-template-columns:30px 1fr; gap:7px; margin:0 0 10px; }
+    .example p:last-child { margin-bottom:0; }
+    .letter { display:inline-grid; place-items:center; height:27px; width:27px; border-radius:50%; background:var(--green); color:#fff; font-weight:750; font-size:.85rem; }
+    .row { display:grid; grid-template-columns:48px 1fr; gap:12px; align-items:center; border-top:1px solid var(--line); padding:10px 0; }
+    .row label { font-weight:750; color:var(--green); }
+    select, textarea, input { font:inherit; color:var(--ink); background:#fff; border:1.5px solid #758f82; border-radius:7px; }
+    select, input { min-height:44px; padding:7px 11px; }
+    select { width:100%; max-width:450px; }
+    textarea { width:100%; min-height:86px; padding:11px 12px; resize:vertical; }
+    .question { margin-top:17px; }
+    .question label { display:block; font-weight:700; margin:0 0 7px; }
+    .question small { display:block; color:var(--muted); margin-top:4px; }
+    .feedback { margin-top:13px; padding:12px 14px; background:#e9f3ea; border-left:4px solid var(--green2); }
+    .feedback[hidden], .status[hidden] { display:none; }
+    .feedback ul { margin:7px 0 0; padding-left:22px; }
+    .feedback li { margin:4px 0; }
+    .actions { display:flex; flex-wrap:wrap; align-items:center; gap:11px; margin-top:17px; }
+    button { border:0; border-radius:7px; padding:11px 18px; font:inherit; font-weight:750; cursor:pointer; }
+    .primary { background:var(--green); color:#fff; }
+    .primary:hover { background:#21664c; }
+    .secondary { background:#e7eee8; color:var(--green); border:1px solid #b6cbbb; }
+    .secondary:hover { background:#d8e7dc; }
+    .submit { min-width:200px; }
+    .status { margin-top:15px; padding:12px 14px; border-radius:6px; background:#eaf3eb; color:var(--green); font-weight:600; }
+    .status.error { background:#fff1ed; color:var(--bad); }
+    .privacy { border-top:1px solid var(--line); margin-top:18px; padding-top:14px; font-size:.91rem; color:var(--muted); }
+    footer { max-width:1040px; margin:0 auto; padding:0 22px 32px; color:var(--muted); font-size:.87rem; }
+    @media (max-width:800px) { .guide { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media (max-width:520px) { body{font-size:16px}.card{padding:18px}.guide{grid-template-columns:1fr}.guide li{min-height:0}.top-inner{align-items:flex-start;flex-direction:column;gap:2px} }
+    @media (prefers-reduced-motion:reduce) { html{scroll-behavior:auto} }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to exercise</a>
+  <header class="top"><div class="top-inner"><a href="../">EDPY 501 · Fall 2026</a><span>Chapter 5 / The Introduction</span></div></header>
+  <main id="main">
+    <p class="eyebrow">A short practice exercise</p>
+    <h1>Build a research introduction</h1>
+    <p class="lead">Read one fictional example, identify the five jobs its introduction performs, then strengthen its research gap. Work individually and submit your responses with your CCID.</p>
+    <div class="meta"><span>About 12–15 minutes</span><span>One example</span><span>Five short tasks</span></div>
+
+    <section class="card" aria-labelledby="guide-title">
+      <h2 id="guide-title">The five jobs of an introduction</h2>
+      <p>Creswell and Creswell call this a guide for building a rationale. A published article may combine these jobs or place parts of the literature review elsewhere; the order is a reading aid, not a required five-paragraph rule.</p>
+      <ol class="guide">
+        <li><strong>1. Problem</strong>What educational concern needs attention?</li>
+        <li><strong>2. Prior work</strong>What do existing studies already tell us?</li>
+        <li><strong>3. Gap</strong>What specific point remains unclear?</li>
+        <li><strong>4. Significance</strong>Who could use the answer, and why?</li>
+        <li><strong>5. Purpose</strong>What will this study examine?</li>
+      </ol>
+    </section>
+
+    <form id="exercise" novalidate>
+      <section class="card" aria-labelledby="example-title">
+        <p class="eyebrow">Part 1</p>
+        <h2 id="example-title">Read and identify</h2>
+        <p class="note">This is an invented teaching example. Its statements about previous research are for practice, not claims you should cite as evidence.</p>
+        <div class="example" aria-label="Five sentences in a sample introduction">
+          <p><span class="letter">A</span><span>In first-year university writing courses, students receive peer comments but may be unsure which suggestions to use.</span></p>
+          <p><span class="letter">B</span><span>Prior studies suggest that structured peer feedback can help students revise their drafts.</span></p>
+          <p><span class="letter">C</span><span>However, these studies tell us less about how novice writers decide to accept or set aside particular comments.</span></p>
+          <p><span class="letter">D</span><span>Understanding those decisions could help writing instructors teach students how to evaluate feedback.</span></p>
+          <p><span class="letter">E</span><span>This interview study will explore how first-year undergraduates explain their decisions to use or set aside peer comments after revising one assignment.</span></p>
+        </div>
+        <p><strong>1.</strong> Select the job performed by each sentence.</p>
+        <div id="matches">
+          <div class="row"><label for="move-a">A</label><select id="move-a" required><option value="">Choose one</option><option>Problem</option><option>Prior work</option><option>Gap</option><option>Significance</option><option>Purpose</option></select></div>
+          <div class="row"><label for="move-b">B</label><select id="move-b" required><option value="">Choose one</option><option>Problem</option><option>Prior work</option><option>Gap</option><option>Significance</option><option>Purpose</option></select></div>
+          <div class="row"><label for="move-c">C</label><select id="move-c" required><option value="">Choose one</option><option>Problem</option><option>Prior work</option><option>Gap</option><option>Significance</option><option>Purpose</option></select></div>
+          <div class="row"><label for="move-d">D</label><select id="move-d" required><option value="">Choose one</option><option>Problem</option><option>Prior work</option><option>Gap</option><option>Significance</option><option>Purpose</option></select></div>
+          <div class="row"><label for="move-e">E</label><select id="move-e" required><option value="">Choose one</option><option>Problem</option><option>Prior work</option><option>Gap</option><option>Significance</option><option>Purpose</option></select></div>
+        </div>
+        <div class="actions"><button id="check" type="button" class="secondary">Check my matches</button><span class="note">You may revise them before submitting.</span></div>
+        <div id="match-feedback" class="feedback" aria-live="polite" hidden></div>
+      </section>
+
+      <section class="card" aria-labelledby="thinking-title">
+        <p class="eyebrow">Part 2</p>
+        <h2 id="thinking-title">Explain and improve</h2>
+        <div class="question"><label for="difference">2. In this example, how is the educational problem different from the research gap?</label><textarea id="difference" required maxlength="650" placeholder="The problem is... The gap is..."></textarea><small>One or two sentences.</small></div>
+        <div class="question"><label for="gap">3. Replace the vague statement “More research is needed” with a specific gap for this study.</label><textarea id="gap" required maxlength="650" placeholder="Earlier studies show..., but we still do not know..."></textarea><small>Connect what is known to what remains unclear.</small></div>
+        <div class="question"><label for="audience">4. Who is explicitly named as an audience? Suggest one other possible audience, clearly labelled as your inference.</label><textarea id="audience" required maxlength="650" placeholder="The example names... I infer that... could also use the findings because..."></textarea></div>
+        <div class="question"><label for="alignment">5. Does the purpose address the gap? Explain how the proposed interviews could help.</label><textarea id="alignment" required maxlength="650" placeholder="Yes/partly/no, because... Interviews could provide..."></textarea><small>Judge the connection; do not simply repeat sentence E.</small></div>
+      </section>
+
+      <section class="card" aria-labelledby="submit-title">
+        <p class="eyebrow">Finish</p>
+        <h2 id="submit-title">Submit your exercise</h2>
+        <div class="question"><label for="ccid">Your University of Alberta CCID</label><input id="ccid" name="ccid" type="text" autocomplete="username" inputmode="text" maxlength="40" required placeholder="CCID only, without @ualberta.ca"><small>Your CCID identifies your response for the instructor. Do not enter your password.</small></div>
+        <div class="actions"><button class="primary submit" type="submit">Submit responses</button></div>
+        <div id="status" class="status" role="status" aria-live="polite" hidden></div>
+        <p class="privacy">Your answers and CCID are sent from this page to the private course response record. They are not posted to the public GitHub repository. Wait for the confirmation above before leaving.</p>
+      </section>
+    </form>
+
+    <p class="note">Transfer to the article critique: use the five jobs to read the Rasooli et al. introduction and early literature sections. Identify what the authors state and label any audience you infer as your own interpretation.</p>
+  </main>
+  <footer>Based on Creswell, J. W., &amp; Creswell, J. D. (2018), <cite>Research Design</cite> (5th ed.), <a href="https://www.ucg.ac.me/skladiste/blog_609332/objava_105202/fajlovi/Creswell.pdf" target="_blank" rel="noopener">Chapter 5: The Introduction</a>.</footer>
+
+  <iframe name="submission-frame" id="submission-frame" title="Private submission response" hidden></iframe>
+  <form id="submission" action="https://submit.jotform.com/submit/262736942400052" method="post" target="submission-frame" hidden>
+    <input type="hidden" name="formID" value="262736942400052">
+    <input type="hidden" name="simple_spc" value="262736942400052-262736942400052">
+    <input type="hidden" name="q2_q2_textbox0" id="send-ccid">
+    <input type="hidden" name="q3_q3_textarea1" id="send-responses">
+  </form>
+  <script>
+    (() => {
+      "use strict";
+      const answer = {a:"Problem", b:"Prior work", c:"Gap", d:"Significance", e:"Purpose"};
+      const ids = Object.keys(answer);
+      const feedback = document.getElementById("match-feedback");
+      const status = document.getElementById("status");
+      const exercise = document.getElementById("exercise");
+      const submissionFrame = document.getElementById("submission-frame");
+      const submitButton = document.querySelector(".submit");
+      let submitting = false;
+      window.addEventListener("message", event => {
+        if (!submitting || event.source !== submissionFrame.contentWindow) return;
+        if (!["https://submit.jotform.com","https://form.jotform.com"].includes(event.origin)) return;
+        if (event.data?.action !== "submission-completed" || event.data?.formID !== "262736942400052") return;
+        submitting = false;
+        showStatus("Submitted successfully. Your instructor has received your CCID and responses.", false);
+        submitButton.textContent = "Submitted ✓";
+      });
+      function showStatus(message, isError) {
+        status.textContent = message;
+        status.hidden = false;
+        status.classList.toggle("error", Boolean(isError));
+        status.scrollIntoView({block:"nearest"});
+      }
+      document.getElementById("check").addEventListener("click", () => {
+        const chosen = ids.map(id => document.getElementById("move-"+id).value);
+        if (chosen.some(value => !value)) {
+          feedback.textContent = "Select a job for all five sentences before checking.";
+        } else {
+          const correct = ids.filter((id,i) => chosen[i] === answer[id]).length;
+          feedback.innerHTML = `<strong>${correct} of 5 matched.</strong> <span>The example follows: A = problem; B = prior work; C = gap; D = significance; E = purpose.</span><ul><li>The problem is the practical concern; the gap is the specific missing knowledge.</li><li>The significance names writing instructors; other audiences should be marked as your inference.</li></ul>`;
+        }
+        feedback.hidden = false;
+      });
+      exercise.addEventListener("submit", event => {
+        event.preventDefault();
+        const ccid = document.getElementById("ccid").value.trim();
+        const fields = ["difference","gap","audience","alignment"];
+        const incompleteMove = ids.find(id => !document.getElementById("move-"+id).value);
+        const incompleteText = fields.find(id => !document.getElementById(id).value.trim());
+        if (incompleteMove || incompleteText || !ccid) {
+          const first = document.getElementById(incompleteMove ? "move-"+incompleteMove : incompleteText || "ccid");
+          showStatus("Complete all five matches, the four short responses, and your CCID before submitting.", true);
+          first.focus();
+          return;
+        }
+        if (!/^[a-zA-Z0-9._-]{2,40}$/.test(ccid)) {
+          showStatus("Enter your CCID without spaces or the @ualberta.ca address.", true);
+          document.getElementById("ccid").focus();
+          return;
+        }
+        const lines = [
+          "EDPY 501 — Chapter 5 introduction exercise",
+          "1. Match the moves: " + ids.map(id => id.toUpperCase()+" = "+document.getElementById("move-"+id).value).join("; "),
+          "2. Problem versus gap: " + document.getElementById("difference").value.trim(),
+          "3. Specific gap: " + document.getElementById("gap").value.trim(),
+          "4. Stated and inferred audiences: " + document.getElementById("audience").value.trim(),
+          "5. Purpose and evidence: " + document.getElementById("alignment").value.trim()
+        ];
+        document.getElementById("send-ccid").value = ccid;
+        document.getElementById("send-responses").value = lines.join("\n\n");
+        submitting = true;
+        submitButton.disabled = true;
+        submitButton.textContent = "Submitting…";
+        showStatus("Submitting your responses… Please wait for confirmation on this page.", false);
+        document.getElementById("submission").submit();
+        window.setTimeout(() => {
+          if (submitting) {
+            submitting = false;
+            submitButton.disabled = false;
+            submitButton.textContent = "Try submission again";
+            showStatus("We could not confirm receipt. Your answers are still on this page; try submission again, or tell your instructor if it continues.", true);
+          }
+        }, 20000);
+      });
+    })();
+  </script>
+</body>
+</html>
