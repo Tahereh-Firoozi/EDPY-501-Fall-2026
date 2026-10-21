@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="EDPY 501 Chapter 8 activity on survey and experimental methods.">
+  <title>Quantitative Methods Activity | EDPY 501</title>
+  <style>
+    :root { color-scheme:light; --green:#07543c; --deep:#103c2e; --gold:#edc849; --ink:#22312a; --muted:#53675e; --paper:#fff; --wash:#f4f7f2; --line:#cbdad0; --good:#dff1e4; --caution:#fff3d6; --error:#8c302a; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--wash); color:var(--ink); font:18px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+    button,input { font:inherit; }
+    button { cursor:pointer; }
+    button:disabled { cursor:not-allowed; opacity:.55; }
+    button:focus-visible,input:focus-visible,a:focus-visible { outline:3px solid #a47b00; outline-offset:3px; }
+    [hidden] { display:none !important; }
+    .skip { position:absolute; top:-60px; left:12px; background:#fff; padding:7px 12px; z-index:10; }
+    .skip:focus { top:10px; }
+    header { background:var(--deep); color:#fff; border-bottom:6px solid var(--gold); }
+    .head { max-width:1100px; margin:auto; padding:19px 24px; display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:10px; }
+    .head strong { display:block; letter-spacing:.03em; font-size:1.05rem; }
+    .head span { color:#d9ebe1; font-size:.9rem; }
+    main { max-width:1000px; margin:0 auto; padding:44px 22px 65px; }
+    .kicker { color:var(--green); text-transform:uppercase; font-size:.76rem; letter-spacing:.13em; font-weight:800; margin:0 0 9px; }
+    h1 { font-size:clamp(2.2rem,5vw,3.6rem); line-height:1.08; letter-spacing:-.035em; color:var(--deep); margin:0 0 16px; }
+    h2 { font-size:clamp(1.55rem,3.4vw,2.15rem); line-height:1.24; color:var(--deep); margin:0 0 20px; }
+    p { margin:0 0 15px; }
+    .lead { font-size:1.15rem; max-width:760px; }
+    .panel { background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:clamp(24px,5vw,50px); box-shadow:0 12px 32px #0e3d2910; }
+    .meta { display:flex; flex-wrap:wrap; gap:11px; margin:24px 0 28px; }
+    .meta span { border:1px solid #bad1c2; color:var(--deep); border-radius:30px; padding:5px 13px; background:#eaf2ec; font-size:.86rem; font-weight:700; }
+    label[for="ccid"] { display:block; font-weight:750; margin:27px 0 7px; }
+    #ccid { width:min(100%,380px); min-height:54px; border:1.5px solid #82998d; border-radius:8px; padding:10px 14px; }
+    .help { color:var(--muted); font-size:.88rem; margin-top:8px; }
+    .actions { display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-top:27px; }
+    .btn { border:0; border-radius:9px; padding:12px 22px; min-height:51px; font-weight:760; }
+    .primary { background:var(--green); color:#fff; }
+    .primary:hover:not(:disabled) { background:#126b4d; }
+    .secondary { background:#e9f0ea; border:1px solid #b9cfc0; color:var(--deep); }
+    .secondary:hover:not(:disabled) { background:#dcebe0; }
+    .status { color:var(--error); font-weight:700; min-height:1.4em; margin-top:13px; }
+    .stepbar { display:flex; align-items:center; justify-content:space-between; gap:20px; color:var(--green); font-weight:800; font-size:.85rem; letter-spacing:.045em; text-transform:uppercase; margin-bottom:13px; }
+    .track { height:8px; border-radius:50px; overflow:hidden; background:#dfe9e1; margin:0 0 35px; }
+    .track > span { display:block; height:100%; background:var(--green); width:0; transition:width .2s; }
+    .topic { font-size:.88rem; font-weight:800; text-transform:uppercase; letter-spacing:.09em; color:#48745d; margin-bottom:8px; }
+    .choices { border:0; padding:0; margin:29px 0 0; display:grid; gap:12px; }
+    .choice { display:flex; align-items:flex-start; gap:13px; border:2px solid var(--line); border-radius:11px; padding:17px 19px; background:#fff; cursor:pointer; }
+    .choice:hover { border-color:#8eb29a; }
+    .choice:has(input:checked) { border-color:var(--green); background:#edf5ef; }
+    .choice input { width:21px; height:21px; margin:3px 0 0; accent-color:var(--green); flex:none; }
+    .choice b { color:var(--deep); min-width:22px; }
+    .choice.locked { cursor:default; }
+    .choice.correct { border-color:#27784e; background:#e5f4e9; }
+    .feedback { margin-top:26px; border-left:6px solid var(--green); background:var(--good); padding:17px 20px; border-radius:0 8px 8px 0; }
+    .feedback.incorrect { border-color:#9e7520; background:var(--caution); }
+    .feedback strong { display:block; color:var(--deep); margin-bottom:5px; }
+    .feedback p { margin:0; }
+    .results { margin:25px 0 0; padding:0; list-style:none; }
+    .results li { border-top:1px solid var(--line); padding:17px 0; }
+    .results strong { display:block; color:var(--deep); margin-bottom:5px; }
+    .results span { display:block; color:var(--muted); font-size:.91rem; }
+    .finish-note { background:#eff5ef; padding:17px 20px; border-left:5px solid var(--green); margin:25px 0; }
+    .submit-status { padding:14px 18px; margin-top:20px; background:#e9f3ec; border-radius:8px; font-weight:650; }
+    .submit-status.error { background:#fff0e9; color:var(--error); }
+    footer { max-width:1000px; margin:auto; padding:0 22px 30px; color:var(--muted); font-size:.83rem; }
+    @media(max-width:600px) { body{font-size:17px} main{padding-top:28px} .choice{padding:15px 13px} .head{padding:15px 20px} }
+    @media(prefers-reduced-motion:reduce) { .track > span{transition:none} }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to activity</a>
+  <header><div class="head"><div><strong>EDPY 501 · Research Methodology in Education</strong><span>University of Alberta</span></div><span>Chapter 8 · Quantitative methods</span></div></header>
+  <main id="main">
+    <section id="intro" class="panel" aria-labelledby="intro-title">
+      <p class="kicker">Individual practice activity</p>
+      <h1 id="intro-title">Read the design. Judge the claim.</h1>
+      <p class="lead">Answer ten questions about survey and experimental methods. After each answer, you will see the correct response and a short explanation.</p>
+      <div class="meta"><span>10 questions</span><span>No timer</span><span>Immediate feedback</span></div>
+      <p>Enter your CCID, then work through the questions. Your instructor receives your choices when you submit at the end. You do not need a GitHub account.</p>
+      <label for="ccid">Your University of Alberta CCID</label>
+      <input id="ccid" type="text" autocomplete="username" maxlength="40" spellcheck="false" placeholder="CCID, without @ualberta.ca">
+      <p class="help">Enter your CCID only. Never enter your password.</p>
+      <div class="actions"><button class="btn primary" id="begin" type="button">Begin activity</button></div>
+      <p class="status" id="intro-status" role="alert"></p>
+    </section>
+
+    <section id="question-screen" class="panel" aria-labelledby="question-title" hidden>
+      <div class="stepbar"><span id="number"></span><span id="progress-label"></span></div>
+      <div class="track" aria-hidden="true"><span id="progress-fill"></span></div>
+      <p class="topic" id="topic"></p>
+      <h2 id="question-title"></h2>
+      <fieldset id="choices" class="choices" aria-label="Choose one answer"></fieldset>
+      <div id="feedback" class="feedback" role="status" aria-live="polite" hidden></div>
+      <div class="actions">
+        <button class="btn primary" id="check" type="button">Check answer</button>
+        <button class="btn primary" id="next" type="button" hidden>Next question</button>
+        <button class="btn secondary" id="previous" type="button" hidden>Previous question</button>
+      </div>
+      <p class="status" id="question-status" role="alert"></p>
+    </section>
+
+    <section id="finish" class="panel" aria-labelledby="finish-title" hidden>
+      <p class="kicker">Completed</p>
+      <h1 id="finish-title">Review and submit</h1>
+      <p>Your choices are listed below. The explanations on each question are for learning, and this activity has no timer or leaderboard.</p>
+      <p class="finish-note">Your CCID and all ten responses will be sent to your instructor’s private course response record. They will not appear in the public GitHub repository.</p>
+      <ol id="results" class="results"></ol>
+      <div class="actions">
+        <button class="btn primary" id="submit" type="button">Submit responses</button>
+        <button class="btn secondary" id="review-last" type="button">Review question 10</button>
+      </div>
+      <div id="submit-status" class="submit-status" role="status" aria-live="polite" hidden></div>
+    </section>
+  </main>
+  <footer>Practice questions based on Creswell, J. W. (2009), <cite>Research Design</cite> (3rd ed.), Chapter 8. Educational scenarios are illustrative.</footer>
+
+  <iframe name="submission-frame" id="submission-frame" title="Private submission response" hidden></iframe>
+  <form id="submission-form" action="https://submit.jotform.com/submit/262936198156065" method="post" target="submission-frame" hidden>
+    <input type="hidden" name="formID" value="262936198156065">
+    <input type="hidden" name="simple_spc" value="262936198156065-262936198156065">
+    <input type="hidden" name="website" value="">
+    <input type="hidden" name="q2_q2_textbox0" id="send-ccid">
+    <input type="hidden" name="q3_q3_textarea1" id="send-responses">
+  </form>
+  <script>
+  (() => {
+    'use strict';
+    const formId = '262936198156065';
+    const letters = ['A', 'B', 'C', 'D'];
+    const questions = [
+      {topic:'Survey methods · Choosing a design', prompt:'A researcher wants to estimate the percentage of first-year master’s students who find peer feedback useful. Which design best fits this question?', options:['A survey of a suitably selected sample of those students','An experiment that assigns students to two feedback conditions','Interviews with two students who enjoyed peer feedback','A pretest and posttest of writing quality'], correct:0, explanation:'The question asks for an estimate about a population. A survey with appropriate sampling and clear measurement fits that aim.'},
+      {topic:'Survey methods · Sampling frame', prompt:'A study aims to describe all students in a faculty, but its invitation list includes only full-time students. What is the main concern?', options:['The sample is too large.','Part-time students have no chance of being included.','The study must use an experiment.','The questionnaire cannot measure attitudes.'], correct:1, explanation:'The invitation list is the sampling frame. It leaves out part-time students, who are part of the intended population.'},
+      {topic:'Survey methods · Stratified sampling', prompt:'A researcher wants students from each of four programs represented. They divide the student list by program and randomly select students within each program. What is this procedure?', options:['Convenience sampling','Cluster sampling','Stratified sampling','Random assignment'], correct:2, explanation:'The researcher forms program strata and then samples within each one. Random assignment, in contrast, allocates participants to conditions.'},
+      {topic:'Survey methods · Measurement', prompt:'A questionnaire has consistent responses across its items, but every item asks whether students liked feedback. The researchers use its score to claim that feedback improved writing quality. What is the strongest concern?', options:['The items were answered online.','Consistent responses prove that writing improved.','The score measures satisfaction, which differs from writing quality.','All questionnaires require a control group.'], correct:2, explanation:'Consistent responses may support reliability, but satisfaction items do not directly measure improvement in writing quality.'},
+      {topic:'Survey methods · Interpreting an association', prompt:'Students who report receiving more peer comments also report greater confidence in revising their writing. Which conclusion fits these data?', options:['Peer comments caused the increase in confidence.','Confidence caused students to receive more comments.','Reported comment frequency and confidence are associated among respondents.','The association applies equally to every university student.'], correct:2, explanation:'The survey shows an association among respondents. It does not establish the direction of a causal effect or automatically generalize to all students.'},
+      {topic:'Experimental methods · Random procedures', prompt:'A researcher recruits volunteers, then uses a random procedure to place them in either a structured-feedback group or a usual-feedback group. What was randomized?', options:['Selection from the student population','Assignment to the two conditions','Both selection and assignment','Neither selection nor assignment'], correct:1, explanation:'The students volunteered to join the study. A chance procedure then assigned them to conditions. These are separate steps.'},
+      {topic:'Experimental methods · Design', prompt:'One existing class receives structured feedback and another receives usual feedback. Both classes complete the same writing task before and after the intervention. Students were not randomly assigned. Which description is most accurate?', options:['A randomized experiment','A quasi-experiment with a comparison group','A cross-sectional survey','A posttest-only single-group design'], correct:1, explanation:'The study compares an intervention with another condition, but the intact classes were not randomly assigned.'},
+      {topic:'Experimental methods · Alternative explanations', prompt:'In Question 7, the structured-feedback class improves more. What should the researcher check before attributing the difference to feedback?', options:['Whether the classes differed initially or had different teachers or experiences','Whether the graph uses the university’s colours','Whether both classes have exactly the same number of students','Whether the pretest can be removed from the report'], correct:0, explanation:'Existing differences between classes or events during the study could also explain the difference in improvement.'},
+      {topic:'Experimental methods · Factorial design', prompt:'A study varies feedback type (structured or usual) and revision time (one day or one week). What would an interaction mean?', options:['Both factors were measured with the same questionnaire.','The effect of feedback type differs depending on revision time.','Students were randomly selected from the university.','The two factors have identical effects.'], correct:1, explanation:'An interaction means that the effect of one factor depends on the level of the other factor.'},
+      {topic:'Experimental methods · Attrition', prompt:'Students are randomly assigned to two feedback conditions. Many more students leave the structured-feedback group before the posttest. Why does this matter?', options:['Random assignment automatically removes the problem.','The remaining groups may differ because dropout changed who was measured.','The study has become a survey.','A pretest would make dropout irrelevant.'], correct:1, explanation:'Unequal dropout can change group composition after random assignment and weaken the treatment comparison.'}
+    ];
+
+    const $ = id => document.getElementById(id);
+    const answers = Array(questions.length).fill(null);
+    let ccid = '';
+    let current = 0;
+    let pending = false;
+    let submitted = false;
+    const screens = ['intro','question-screen','finish'];
+
+    function show(id) {
+      screens.forEach(screen => { $(screen).hidden = screen !== id; });
+      window.scrollTo({top:0,behavior:'instant'});
+      const focusTarget = id === 'question-screen' ? $('question-title') : id === 'finish' ? $('finish-title') : $('intro-title');
+      focusTarget.setAttribute('tabindex','-1');
+      focusTarget.focus({preventScroll:true});
+    }
+    function renderQuestion() {
+      const q = questions[current];
+      const recorded = answers[current];
+      $('number').textContent = `Question ${current + 1} of ${questions.length}`;
+      $('progress-label').textContent = `${answers.filter(a => a !== null).length} answered`;
+      $('progress-fill').style.width = `${(answers.filter(a => a !== null).length / questions.length) * 100}%`;
+      $('topic').textContent = q.topic;
+      $('question-title').textContent = q.prompt;
+      const choices = $('choices');
+      choices.replaceChildren();
+      q.options.forEach((option,i) => {
+        const label = document.createElement('label');
+        label.className = 'choice';
+        if (recorded !== null) {
+          label.classList.add('locked');
+          if (i === q.correct) label.classList.add('correct');
+        }
+        const input = document.createElement('input');
+        input.type = 'radio'; input.name = 'answer'; input.value = String(i);
+        input.checked = recorded === i; input.disabled = recorded !== null;
+        const letter = document.createElement('b'); letter.textContent = letters[i] + '.';
+        const text = document.createElement('span'); text.textContent = option;
+        label.append(input,letter,text);
+        choices.append(label);
+      });
+      $('feedback').hidden = recorded === null;
+      if (recorded !== null) {
+        $('feedback').classList.toggle('incorrect', recorded !== q.correct);
+        $('feedback').replaceChildren();
+        const heading = document.createElement('strong');
+        heading.textContent = recorded === q.correct ? 'Correct.' : `The correct answer is ${letters[q.correct]}. ${q.options[q.correct]}`;
+        const explanation = document.createElement('p'); explanation.textContent = q.explanation;
+        $('feedback').append(heading,explanation);
+      }
+      $('check').hidden = recorded !== null;
+      $('next').hidden = recorded === null;
+      $('next').textContent = current === questions.length - 1 ? 'Review and submit' : 'Next question';
+      $('previous').hidden = current === 0;
+      $('question-status').textContent = '';
+      show('question-screen');
+    }
+    function renderFinish() {
+      $('results').replaceChildren();
+      questions.forEach((q,i) => {
+        const item = document.createElement('li');
+        const heading = document.createElement('strong'); heading.textContent = `${i + 1}. ${q.prompt}`;
+        const selected = document.createElement('span'); selected.textContent = `Your answer: ${letters[answers[i]]}. ${q.options[answers[i]]}`;
+        const correct = document.createElement('span'); correct.textContent = `Correct answer: ${letters[q.correct]}. ${q.options[q.correct]}`;
+        item.append(heading,selected,correct);
+        $('results').append(item);
+      });
+      show('finish');
+    }
+    $('begin').addEventListener('click', () => {
+      const value = $('ccid').value.trim();
+      if (!/^[A-Za-z0-9._-]{2,40}$/.test(value)) {
+        $('intro-status').textContent = 'Enter your CCID without spaces or @ualberta.ca.';
+        $('ccid').focus();
+        return;
+      }
+      ccid = value;
+      current = 0;
+      renderQuestion();
+    });
+    $('ccid').addEventListener('keydown', e => { if (e.key === 'Enter') $('begin').click(); });
+    $('check').addEventListener('click', () => {
+      const choice = document.querySelector('#choices input:checked');
+      if (!choice) { $('question-status').textContent = 'Choose one answer first.'; return; }
+      answers[current] = Number(choice.value);
+      renderQuestion();
+      $('feedback').scrollIntoView({block:'nearest'});
+    });
+    $('next').addEventListener('click', () => {
+      if (current === questions.length - 1) renderFinish();
+      else { current++; renderQuestion(); }
+    });
+    $('previous').addEventListener('click', () => { if (current > 0) { current--; renderQuestion(); } });
+    $('review-last').addEventListener('click', () => { current = questions.length - 1; renderQuestion(); });
+
+    function setSubmissionStatus(message,error=false) {
+      $('submit-status').textContent = message;
+      $('submit-status').hidden = false;
+      $('submit-status').classList.toggle('error',error);
+    }
+    window.addEventListener('message', event => {
+      if (!pending || event.source !== $('submission-frame').contentWindow) return;
+      if (!['https://submit.jotform.com','https://form.jotform.com'].includes(event.origin)) return;
+      if (event.data?.action !== 'submission-completed' || event.data?.formID !== formId) return;
+      pending = false; submitted = true;
+      $('submit').disabled = true;
+      $('submit').textContent = 'Submitted';
+      setSubmissionStatus('Submitted successfully. Your instructor has received your CCID and all ten responses.');
+    });
+    $('submit').addEventListener('click', () => {
+      if (pending || submitted) return;
+      if (answers.some(a => a === null) || !ccid) {
+        setSubmissionStatus('Complete all ten questions and enter your CCID before submitting.',true);
+        return;
+      }
+      const correct = answers.filter((a,i) => a === questions[i].correct).length;
+      const lines = ['EDPY 501 — Chapter 8 quantitative methods activity',`Completed: ${new Date().toISOString()}`,`Correct selections: ${correct} of ${questions.length}`,''];
+      questions.forEach((q,i) => {
+        lines.push(`${i + 1}. ${q.prompt}`);
+        lines.push(`Student response: ${letters[answers[i]]}. ${q.options[answers[i]]}`);
+        lines.push(`Correct response: ${letters[q.correct]}. ${q.options[q.correct]}`);
+        lines.push('');
+      });
+      $('send-ccid').value = ccid;
+      $('send-responses').value = lines.join('\n');
+      pending = true;
+      $('submit').disabled = true;
+      $('submit').textContent = 'Submitting…';
+      setSubmissionStatus('Submitting your responses. Please wait for confirmation.');
+      $('submission-form').submit();
+      window.setTimeout(() => {
+        if (!pending) return;
+        pending = false;
+        $('submit').disabled = false;
+        $('submit').textContent = 'Try submission again';
+        setSubmissionStatus('Receipt could not be confirmed. Keep this page open and ask your instructor to check before trying again, to avoid a duplicate.',true);
+      },30000);
+    });
+  })();
+  </script>
+</body>
+</html>
