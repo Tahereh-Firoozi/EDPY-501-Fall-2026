@@ -58,7 +58,7 @@
     .line-action { display:block; margin:11px 0 0 42px; padding:6px 11px; color:var(--deep); background:#edf4ee; border:1px solid #a9c7b4; border-radius:7px; font-size:.9rem; font-weight:700; }
     .line-action:hover { background:#dbeee0; }
     .button-row { display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin:24px 0 0; }
-    .btn { min-height:48px; padding:10px 18px; border-radius:9px; font-weight:750; border:1px solid var(--green); }
+    .btn { display:inline-flex; align-items:center; justify-content:center; min-height:48px; padding:10px 18px; border-radius:9px; font-weight:750; border:1px solid var(--green); text-decoration:none; }
     .btn.primary { color:white; background:var(--green); }
     .btn.primary:hover:not(:disabled) { background:#0d6a4a; }
     .btn.secondary { color:var(--deep); background:#eef5ef; border-color:#9ab9a4; }
@@ -91,8 +91,14 @@
     .theme-list { display:grid; gap:14px; margin:18px 0 0; }
     .difference { margin-top:20px; }
     .status { color:var(--muted); font-size:.9rem; min-height:1.4em; margin:12px 0 0; }
+    .save-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; margin-top:22px; }
+    .save-card { background:white; border:1px solid var(--line); border-radius:12px; padding:22px; }
+    .save-card h3 { margin-bottom:10px; }
+    .save-card .button-row { margin-top:18px; }
+    .save-summary { padding:15px 18px; background:var(--sage); border-left:5px solid var(--green); border-radius:0 9px 9px 0; margin:18px 0 0; font-weight:700; }
+    .save-card p:last-child { margin-bottom:0; }
     footer { border-top:1px solid var(--line); color:var(--muted); padding:28px 24px 42px; text-align:center; font-size:.9rem; }
-    @media(max-width:820px) { .concepts,.interview-grid,.interview-grid.two { grid-template-columns:1fr; } .form-grid { grid-template-columns:1fr; } }
+    @media(max-width:820px) { .concepts,.interview-grid,.interview-grid.two,.save-grid { grid-template-columns:1fr; } .form-grid { grid-template-columns:1fr; } }
     @media(max-width:520px) { body{font-size:17px} main{padding:25px 14px 50px} .hero-inner{padding:44px 18px} .head{padding:16px 18px} .module{padding:20px 16px} .reveal{padding:19px 13px} .line-action{margin-left:0} }
     @media(prefers-reduced-motion:reduce) { html{scroll-behavior:auto} }
     @media print { body{background:white} header,.hero .path,.button-row,.line-action,.remove,.skip,footer{display:none!important} .hero-inner{padding:12px 0} main{padding:10px 0} .module,.concept,.interview,.code-card,.theme-card{box-shadow:none;break-inside:avoid} .module{border:0;padding:10px 0} .interview-grid,.interview-grid.two{grid-template-columns:1fr 1fr} textarea,input,select{border:1px solid #888} }
@@ -105,7 +111,7 @@
     <p class="eyebrow">Session 9 · Qualitative Procedures</p>
     <h1>From interview words to codes and themes</h1>
     <p class="lead">See a worked example from three students. Then code two new interviews and develop provisional themes with your group.</p>
-    <nav class="path" aria-label="Activity sections"><a href="#model">1 · Worked example</a><a href="#practice">2 · New interviews</a><a href="#workspace">3 · Your analysis</a></nav>
+    <nav class="path" aria-label="Activity sections"><a href="#model">1 · Worked example</a><a href="#practice">2 · New interviews</a><a href="#workspace">3 · Your analysis</a><a href="#save-later">4 · Save &amp; return</a></nav>
   </div></div>
   <main id="main">
     <div class="concepts" aria-label="Key terms">
@@ -209,6 +215,27 @@
       <div class="button-row"><button id="download" type="button" class="btn primary">Download my work</button><button id="print" type="button" class="btn secondary">Print or save as PDF</button><button id="clear" type="button" class="btn quiet">Clear my work</button></div>
       <p id="save-status" class="status" role="status" aria-live="polite"></p>
     </section>
+
+    <section id="save-later" class="module" aria-labelledby="save-later-title">
+      <p class="section-tag">Part 4 · Save &amp; return</p>
+      <h2 id="save-later-title">Continue your work later</h2>
+      <p class="section-intro">Your codes and themes save automatically as you type. Reopen this page in the <strong>same browser on the same device</strong> to continue where you left off. No account or CCID is needed, and your responses are not sent to the instructor.</p>
+      <p id="saved-summary" class="save-summary" role="status" aria-live="polite">Checking saved work…</p>
+      <div class="save-grid">
+        <div class="save-card">
+          <h3>Returning on this device</h3>
+          <p>Select <strong>Save now</strong> for confirmation, then bookmark this page. Your work will appear automatically when you return in this browser. Private browsing or clearing browser data can erase this copy.</p>
+          <div class="button-row"><button id="save-now" type="button" class="btn primary">Save now</button><a class="btn secondary" href="#workspace">Return to my workspace</a></div>
+        </div>
+        <div class="save-card">
+          <h3>Changing devices or browsers</h3>
+          <p>Download a backup file and keep it somewhere you can access later. On another device, open this page and use <strong>Restore backup</strong>. This replaces the work currently shown on that device.</p>
+          <div class="button-row"><button id="backup-download" type="button" class="btn secondary">Download backup</button><button id="backup-restore" type="button" class="btn secondary">Restore backup</button><input id="backup-file" type="file" accept=".json,application/json" hidden aria-label="Choose a Session 9 backup file"></div>
+        </div>
+      </div>
+      <p id="backup-status" class="status" role="status" aria-live="polite"></p>
+      <div class="note"><p><strong>Two different downloads:</strong> “Download my work” makes a readable text copy. “Download backup” makes a file you can restore into this activity to keep editing.</p></div>
+    </section>
   </main>
   <footer>EDPY 501 · Session 9 · Qualitative Procedures · Fictional instructional interview excerpts</footer>
   <script>
@@ -236,23 +263,46 @@
       const refs = ['D2','D3','D4','D5','D6','E2','E3','E4','E5','E6'];
       const blankCode = () => ({ref:'',quote:'',code:'',why:''});
       const blankTheme = () => ({sentence:'',evidence:''});
-      let state = {codes:Array.from({length:5},blankCode),themes:[blankTheme(),blankTheme()],difference:''};
+      const blankState = () => ({codes:Array.from({length:5},blankCode),themes:[blankTheme(),blankTheme()],difference:'',savedAt:''});
+      const limitText = value => String(value ?? '').slice(0,10000);
+      function normalizeState(raw) {
+        if (!raw || !Array.isArray(raw.codes) || !Array.isArray(raw.themes)) return null;
+        const normalized = {
+          codes:raw.codes.slice(0,60).map(x => ({ref:refs.includes(x?.ref)?x.ref:'',quote:limitText(x?.quote),code:limitText(x?.code),why:limitText(x?.why)})),
+          themes:raw.themes.slice(0,3).map(x => ({sentence:limitText(x?.sentence),evidence:limitText(x?.evidence)})),
+          difference:limitText(raw.difference),savedAt:typeof raw.savedAt==='string'?raw.savedAt:''
+        };
+        if (!normalized.codes.length) normalized.codes=[blankCode()];
+        while (normalized.themes.length<2) normalized.themes.push(blankTheme());
+        return normalized;
+      }
+      let state = blankState();
       try {
         const old = JSON.parse(localStorage.getItem(storageKey) || 'null');
-        if (old && Array.isArray(old.codes) && Array.isArray(old.themes)) {
-          state = {
-            codes:old.codes.map(x => ({ref:refs.includes(x.ref)?x.ref:'',quote:String(x.quote||''),code:String(x.code||''),why:String(x.why||'')})),
-            themes:old.themes.slice(0,3).map(x => ({sentence:String(x.sentence||''),evidence:String(x.evidence||'')})),
-            difference:String(old.difference||'')
-          };
-          if (!state.codes.length) state.codes = [blankCode()];
-          while (state.themes.length < 2) state.themes.push(blankTheme());
-        }
+        state = normalizeState(old) || state;
       } catch (_) { /* Browser storage may be unavailable. */ }
 
+      function hasWork() {
+        return state.codes.some(x=>x.ref||x.quote.trim()||x.code.trim()||x.why.trim()) ||
+          state.themes.some(x=>x.sentence.trim()||x.evidence.trim()) || !!state.difference.trim();
+      }
+      function updateSavedSummary() {
+        if (!hasWork()) { $('saved-summary').textContent='No work entered yet. Your answers will save automatically as you type.'; return; }
+        const when=state.savedAt && !Number.isNaN(Date.parse(state.savedAt)) ? ` Last saved: ${new Date(state.savedAt).toLocaleString()}.` : '';
+        $('saved-summary').textContent=`Your work is available in this browser.${when}`;
+      }
       function save() {
-        try { localStorage.setItem(storageKey,JSON.stringify(state)); $('save-status').textContent = 'Saved in this browser.'; }
-        catch (_) { $('save-status').textContent = 'Browser storage is unavailable. Download your work before closing the page.'; }
+        state.savedAt=new Date().toISOString();
+        try {
+          localStorage.setItem(storageKey,JSON.stringify(state));
+          $('save-status').textContent='Saved in this browser.';
+          updateSavedSummary();
+          return true;
+        } catch (_) {
+          $('save-status').textContent='Browser storage is unavailable. Download a backup before closing the page.';
+          $('saved-summary').textContent='Saving in this browser is unavailable. Download a backup to continue later.';
+          return false;
+        }
       }
       function inputElement(tag,id,labelText,value,placeholder,rows) {
         const wrap = document.createElement('div');
@@ -320,8 +370,36 @@
         $('save-status').textContent='Your work was downloaded as a text file.';
       });
       $('print').addEventListener('click',()=>window.print());
-      $('clear').addEventListener('click',()=>{if (!confirm('Clear the coding and themes saved in this browser?')) return;state={codes:Array.from({length:5},blankCode),themes:[blankTheme(),blankTheme()],difference:''};$('difference').value='';renderCodes();renderThemes();save();$('save-status').textContent='Your work was cleared.';});
-      renderCodes();renderThemes();
+      $('clear').addEventListener('click',()=>{if (!confirm('Clear the coding and themes saved in this browser?')) return;state=blankState();$('difference').value='';renderCodes();renderThemes();save();$('save-status').textContent='Your work was cleared.';});
+      $('save-now').addEventListener('click',()=>{
+        $('backup-status').textContent=save() ? 'Saved. Reopen this page in the same browser and on the same device to continue.' : 'Could not save in this browser. Download a backup instead.';
+      });
+      $('backup-download').addEventListener('click',()=>{
+        const backup={kind:'edpy501-session9-qualitative-backup',version:1,exportedAt:new Date().toISOString(),data:state};
+        const url=URL.createObjectURL(new Blob([JSON.stringify(backup,null,2)],{type:'application/json'}));
+        const a=document.createElement('a');a.href=url;a.download='EDPY501-Session9-Backup.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+        $('backup-status').textContent='Backup downloaded. Keep the JSON file to restore your editable work later.';
+      });
+      $('backup-restore').addEventListener('click',()=>$('backup-file').click());
+      $('backup-file').addEventListener('change',async event=>{
+        const file=event.target.files?.[0]; if (!file) return;
+        try {
+          if (file.size>1000000) throw new Error('This file is too large to be a Session 9 backup.');
+          const backup=JSON.parse(await file.text());
+          if (backup.kind!=='edpy501-session9-qualitative-backup'||backup.version!==1) throw new Error('This is not a Session 9 backup file.');
+          const restored=normalizeState(backup.data);
+          if (!restored) throw new Error('The backup does not contain valid coding and theme fields.');
+          if (hasWork()&&!confirm('Restore this backup? It will replace the work currently shown on this device.')) return;
+          state=restored;
+          $('difference').value=state.difference;
+          renderCodes();renderThemes();
+          const stored=save();
+          $('backup-status').textContent=stored?'Backup restored. Your editable work is ready in the workspace.':'Backup opened, but this browser could not save it. Download a backup before leaving.';
+          $('workspace').scrollIntoView({block:'start'});
+        } catch (error) { $('backup-status').textContent=`Could not restore backup: ${error.message}`; }
+        finally { event.target.value=''; }
+      });
+      renderCodes();renderThemes();updateSavedSummary();
     })();
   </script>
 </body>
