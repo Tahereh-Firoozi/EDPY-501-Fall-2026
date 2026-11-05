@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="EDPY 501 Session 10 mixed methods activity on design, sampling, integration, and warranted claims.">
+  <title>Mixed Methods Activity | EDPY 501</title>
+  <style>
+    :root { color-scheme:light; --green:#07543c; --deep:#103c2e; --gold:#edc849; --ink:#22312a; --muted:#53675e; --paper:#fff; --wash:#f4f7f2; --line:#cbdad0; --good:#dff1e4; --caution:#fff3d6; --error:#8c302a; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--wash); color:var(--ink); font:18px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+    button,input { font:inherit; }
+    button { cursor:pointer; }
+    button:disabled { cursor:not-allowed; opacity:.55; }
+    button:focus-visible,input:focus-visible,a:focus-visible { outline:3px solid #a47b00; outline-offset:3px; }
+    [hidden] { display:none !important; }
+    .skip { position:absolute; top:-60px; left:12px; background:#fff; padding:7px 12px; z-index:10; }
+    .skip:focus { top:10px; }
+    header { background:var(--deep); color:#fff; border-bottom:6px solid var(--gold); }
+    .head { max-width:1100px; margin:auto; padding:19px 24px; display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:10px; }
+    .head strong { display:block; letter-spacing:.03em; font-size:1.05rem; }
+    .head span { color:#d9ebe1; font-size:.9rem; }
+    main { max-width:1000px; margin:0 auto; padding:44px 22px 65px; }
+    .kicker { color:var(--green); text-transform:uppercase; font-size:.76rem; letter-spacing:.13em; font-weight:800; margin:0 0 9px; }
+    h1 { font-size:clamp(2.2rem,5vw,3.6rem); line-height:1.08; letter-spacing:-.035em; color:var(--deep); margin:0 0 16px; }
+    h2 { font-size:clamp(1.55rem,3.4vw,2.15rem); line-height:1.24; color:var(--deep); margin:0 0 20px; }
+    p { margin:0 0 15px; }
+    .lead { font-size:1.15rem; max-width:760px; }
+    .panel { background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:clamp(24px,5vw,50px); box-shadow:0 12px 32px #0e3d2910; }
+    .meta { display:flex; flex-wrap:wrap; gap:11px; margin:24px 0 28px; }
+    .meta span { border:1px solid #bad1c2; color:var(--deep); border-radius:30px; padding:5px 13px; background:#eaf2ec; font-size:.86rem; font-weight:700; }
+    label[for="ccid"] { display:block; font-weight:750; margin:27px 0 7px; }
+    #ccid { width:min(100%,380px); min-height:54px; border:1.5px solid #82998d; border-radius:8px; padding:10px 14px; }
+    .help { color:var(--muted); font-size:.88rem; margin-top:8px; }
+    .actions { display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-top:27px; }
+    .btn { border:0; border-radius:9px; padding:12px 22px; min-height:51px; font-weight:760; }
+    .primary { background:var(--green); color:#fff; }
+    .primary:hover:not(:disabled) { background:#126b4d; }
+    .secondary { background:#e9f0ea; border:1px solid #b9cfc0; color:var(--deep); }
+    .secondary:hover:not(:disabled) { background:#dcebe0; }
+    .status { color:var(--error); font-weight:700; min-height:1.4em; margin-top:13px; }
+    .stepbar { display:flex; align-items:center; justify-content:space-between; gap:20px; color:var(--green); font-weight:800; font-size:.85rem; letter-spacing:.045em; text-transform:uppercase; margin-bottom:13px; }
+    .track { height:8px; border-radius:50px; overflow:hidden; background:#dfe9e1; margin:0 0 35px; }
+    .track > span { display:block; height:100%; background:var(--green); width:0; transition:width .2s; }
+    .topic { font-size:.88rem; font-weight:800; text-transform:uppercase; letter-spacing:.09em; color:#48745d; margin-bottom:8px; }
+    .choices { border:0; padding:0; margin:29px 0 0; display:grid; gap:12px; }
+    .choice { display:flex; align-items:flex-start; gap:13px; border:2px solid var(--line); border-radius:11px; padding:17px 19px; background:#fff; cursor:pointer; }
+    .choice:hover { border-color:#8eb29a; }
+    .choice:has(input:checked) { border-color:var(--green); background:#edf5ef; }
+    .choice input { width:21px; height:21px; margin:3px 0 0; accent-color:var(--green); flex:none; }
+    .choice b { color:var(--deep); min-width:22px; }
+    .choice.locked { cursor:default; }
+    .choice.correct { border-color:#27784e; background:#e5f4e9; }
+    .feedback { margin-top:26px; border-left:6px solid var(--green); background:var(--good); padding:17px 20px; border-radius:0 8px 8px 0; }
+    .feedback.incorrect { border-color:#9e7520; background:var(--caution); }
+    .feedback strong { display:block; color:var(--deep); margin-bottom:5px; }
+    .feedback p { margin:0; }
+    .results { margin:25px 0 0; padding:0; list-style:none; }
+    .results li { border-top:1px solid var(--line); padding:17px 0; }
+    .results strong { display:block; color:var(--deep); margin-bottom:5px; }
+    .results span { display:block; color:var(--muted); font-size:.91rem; }
+    .finish-note { background:#eff5ef; padding:17px 20px; border-left:5px solid var(--green); margin:25px 0; }
+    .submit-status { padding:14px 18px; margin-top:20px; background:#e9f3ec; border-radius:8px; font-weight:650; }
+    .submit-status.error { background:#fff0e9; color:var(--error); }
+    footer { max-width:1000px; margin:auto; padding:0 22px 30px; color:var(--muted); font-size:.83rem; }
+    .case { background:#f6f8f3; border:1px solid var(--line); border-radius:12px; padding:20px 23px; margin:22px 0; }
+    .case h2 { font-size:1.35rem; margin:0 0 12px; }
+    .case p { margin:0 0 12px; }
+    .case ul { margin:0 0 12px; padding-left:24px; }
+    .case li { margin:6px 0; }
+    .case-review { margin:0 0 30px; }
+    .case-review summary { cursor:pointer; font-weight:800; color:var(--deep); }
+    .case-review .case { border:0; padding:15px 0 0; margin:0; }
+    @media(max-width:600px) { body{font-size:17px} main{padding-top:28px} .choice{padding:15px 13px} .head{padding:15px 20px} }
+    @media(prefers-reduced-motion:reduce) { .track > span{transition:none} }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to activity</a>
+  <header><div class="head"><div><strong>EDPY 501 · Research Methodology in Education</strong><span>University of Alberta</span></div><span>Session 10 · Mixed methods procedures</span></div></header>
+  <main id="main">
+    <section id="intro" class="panel" aria-labelledby="intro-title">
+      <p class="kicker">Individual practice activity</p>
+      <h1 id="intro-title">Two kinds of evidence. One stronger explanation.</h1>
+      <p class="lead">Use a short survey and four interview excerpts to answer ten questions about mixed methods design and integration. You will see the correct answer and a short explanation after each choice.</p>
+      <div class="meta"><span>10 questions</span><span>No timer</span><span>Immediate feedback</span></div>
+      <p>Read the fictional study below. Enter your CCID, choose one answer per question, then submit at the end. Your progress is saved in this browser so you can return later. You do not need a GitHub account.</p>
+      <div class="case"><h2>Study scenario</h2><p>A peer-feedback guide was used in four graduate writing seminars. After revision, 32 students completed a survey. Twenty-four said they understood the feedback, and 13 said they felt confident revising. The researcher then interviewed students selected from different response patterns.</p><ul><li><strong>Student A:</strong> Understood the comment, but needed an example of how to rewrite.</li><li><strong>Student B:</strong> Understood the comment, but had too little time to revise.</li><li><strong>Student C:</strong> Understood the comment and used the guide to make a plan.</li><li><strong>Student D:</strong> Found some comments vague, but was confident before the activity.</li></ul><p class="help">These are fictional teaching data. The survey reports totals, not each student's paired answers.</p></div>
+      <label for="ccid">Your University of Alberta CCID</label>
+      <input id="ccid" type="text" autocomplete="username" maxlength="40" spellcheck="false" placeholder="CCID, without @ualberta.ca">
+      <p class="help">Enter your CCID only. Never enter your password.</p>
+      <div class="actions"><button class="btn primary" id="begin" type="button">Begin or resume</button><button class="btn secondary" id="clear-saved" type="button">Clear saved progress</button></div>
+      <p class="help" id="resume-note" hidden>Saved answers found on this device. Use the same CCID to resume.</p>
+      <p class="status" id="intro-status" role="alert"></p>
+    </section>
+
+    <section id="question-screen" class="panel" aria-labelledby="question-title" hidden>
+      <div class="stepbar"><span id="number"></span><span id="progress-label"></span></div>
+      <div class="track" aria-hidden="true"><span id="progress-fill"></span></div>
+      <details class="case case-review"><summary>Review the study scenario</summary><div><h2>Study scenario</h2><p>A peer-feedback guide was used in four graduate writing seminars. After revision, 32 students completed a survey. Twenty-four said they understood the feedback, and 13 said they felt confident revising. The researcher then interviewed students selected from different response patterns.</p><ul><li><strong>Student A:</strong> Understood the comment, but needed an example of how to rewrite.</li><li><strong>Student B:</strong> Understood the comment, but had too little time to revise.</li><li><strong>Student C:</strong> Understood the comment and used the guide to make a plan.</li><li><strong>Student D:</strong> Found some comments vague, but was confident before the activity.</li></ul><p class="help">These are fictional teaching data. The survey reports totals, not each student's paired answers.</p></div></details>
+      <p class="topic" id="topic"></p>
+      <h2 id="question-title"></h2>
+      <fieldset id="choices" class="choices" aria-label="Choose one answer"></fieldset>
+      <div id="feedback" class="feedback" role="status" aria-live="polite" hidden></div>
+      <div class="actions">
+        <button class="btn primary" id="check" type="button">Check answer</button>
+        <button class="btn primary" id="next" type="button" hidden>Next question</button>
+        <button class="btn secondary" id="previous" type="button" hidden>Previous question</button>
+      </div>
+      <p class="status" id="question-status" role="alert"></p>
+    </section>
+
+    <section id="finish" class="panel" aria-labelledby="finish-title" hidden>
+      <p class="kicker">Completed</p>
+      <h1 id="finish-title">Review and submit</h1>
+      <p>Your choices are listed below. The explanations on each question are for learning, and this activity has no timer or leaderboard.</p>
+      <p class="finish-note">Your CCID and all ten responses will be sent to the private Session 10 response form when you submit. They will not appear in the public GitHub repository.</p>
+      <ol id="results" class="results"></ol>
+      <div class="actions">
+        <button class="btn primary" id="submit" type="button">Submit responses</button>
+        <button class="btn secondary" id="review-last" type="button">Review question 10</button>
+      </div>
+      <div id="submit-status" class="submit-status" role="status" aria-live="polite" hidden></div>
+    </section>
+  </main>
+  <footer>Practice questions based on Creswell, J. W. (2009), <cite>Research Design</cite> (3rd ed.), Chapter 10. All student data in this activity are fictional.</footer>
+
+  <iframe name="submission-frame" id="submission-frame" title="Private submission response" hidden></iframe>
+  <form id="submission-form" action="https://submit.jotform.com/submit/263087478581066" method="post" target="submission-frame" hidden>
+    <input type="hidden" name="formID" value="263087478581066">
+    <input type="hidden" name="simple_spc" value="263087478581066-263087478581066">
+    <input type="hidden" name="website" value="">
+    <input type="hidden" name="q2_q2_textbox0" id="send-ccid">
+    <input type="hidden" name="q3_q3_textarea1" id="send-responses">
+  </form>
+  <script>
+  (() => {
+    'use strict';
+    const formId = '263087478581066';
+    const letters = ['A', 'B', 'C', 'D'];
+    const questions = [
+          {
+                "topic": "Survey evidence · Reading the totals",
+                "prompt": "Which statement about the survey is accurate?",
+                "options": [
+                      "Most students felt confident revising.",
+                      "More students understood the feedback than felt confident revising.",
+                      "All confident students understood the feedback.",
+                      "The guide increased students' confidence."
+                ],
+                "correct": 1,
+                "explanation": "Twenty-four of 32 students reported understanding, while 13 reported confidence. The totals do not show improvement or how individual students answered both items."
+          },
+          {
+                "topic": "Survey evidence · What totals omit",
+                "prompt": "What cannot be determined from the two survey totals alone?",
+                "options": [
+                      "How many students answered the survey.",
+                      "How many reported understanding the feedback.",
+                      "How many answered yes to both items.",
+                      "How many felt confident revising."
+                ],
+                "correct": 2,
+                "explanation": "We need each student's linked responses to know the overlap between understanding and confidence."
+          },
+          {
+                "topic": "Design choice · Sequence",
+                "prompt": "The survey came first, and interviews were selected to explain its results. Which strategy and notation fit?",
+                "options": [
+                      "Sequential explanatory, QUAN → qual.",
+                      "Sequential exploratory, QUAL → quan.",
+                      "Concurrent triangulation, QUAN + QUAL.",
+                      "A qualitative-only study."
+                ],
+                "correct": 0,
+                "explanation": "The later interviews help explain a quantitative pattern. The survey is the main strand in this example."
+          },
+          {
+                "topic": "Sampling · Contrasting cases",
+                "prompt": "Why interview students with different combinations of survey responses?",
+                "options": [
+                      "Four interviews become statistically representative.",
+                      "Contrasting experiences may help explain the survey pattern.",
+                      "The interviews replace the survey results.",
+                      "The selection proves the guide worked."
+                ],
+                "correct": 1,
+                "explanation": "Students A–D offer contrasting accounts. Their interviews add depth, but four selected students do not represent all 32 respondents."
+          },
+          {
+                "topic": "Qualitative themes · A and B",
+                "prompt": "Which possible theme best connects Students A and B?",
+                "options": [
+                      "Students disliked receiving feedback.",
+                      "Clear comments alone may not provide everything needed to revise.",
+                      "Students did not understand the comments.",
+                      "The guide reduced their writing scores."
+                ],
+                "correct": 1,
+                "explanation": "A needed an example and B needed more time. Both understood the comments but still lacked something needed for confident revision."
+          },
+          {
+                "topic": "Integration · Joint display",
+                "prompt": "Which combined interpretation best pairs the survey pattern with interviews A and B?",
+                "options": [
+                      "The guide caused low confidence.",
+                      "Understanding was more common than confidence; examples and time may help explain why.",
+                      "The survey and interviews necessarily contradict one another.",
+                      "The four interviewees represent all 32 students."
+                ],
+                "correct": 1,
+                "explanation": "This interpretation connects the two strands while treating the interview-based explanation as tentative."
+          },
+          {
+                "topic": "Integration · A contrasting case",
+                "prompt": "What does Student D's account add to the interpretation?",
+                "options": [
+                      "It proves that vague feedback increases confidence.",
+                      "It suggests that confidence may have existed before the guide.",
+                      "It proves that the survey was invalid.",
+                      "It means Student D should be excluded."
+                ],
+                "correct": 1,
+                "explanation": "D reports prior confidence despite vague comments. This complicates a simple claim that clear feedback produced confidence."
+          },
+          {
+                "topic": "Integration · Where strands connect",
+                "prompt": "Where do the quantitative and qualitative strands connect in this study?",
+                "options": [
+                      "Only in the reference list.",
+                      "Survey responses guide interview selection, and the findings meet in the interpretation.",
+                      "Every interview statement becomes a survey score.",
+                      "The two strands remain separate throughout."
+                ],
+                "correct": 1,
+                "explanation": "The survey informs who is interviewed, and the integrated interpretation compares the numeric pattern with those accounts."
+          },
+          {
+                "topic": "Claims · Limits of evidence",
+                "prompt": "Which claim is not supported by this design?",
+                "options": [
+                      "Some students understood feedback without feeling confident.",
+                      "Interviews suggest possible reasons for the difference.",
+                      "The guide caused students' confidence to increase.",
+                      "Prior confidence may shape a student's account."
+                ],
+                "correct": 2,
+                "explanation": "The survey was given only after revision, with no before-and-after confidence measure or comparison group. A causal increase is not established."
+          },
+          {
+                "topic": "Design transfer · Reverse the order",
+                "prompt": "If interviews came first and their themes shaped a later survey, which design would fit?",
+                "options": [
+                      "Sequential exploratory, QUAL → quan.",
+                      "Sequential explanatory, QUAN → qual.",
+                      "Concurrent triangulation, QUAN + QUAL.",
+                      "A quantitative-only survey."
+                ],
+                "correct": 0,
+                "explanation": "The qualitative phase leads and its findings help develop the later quantitative instrument."
+          }
+    ];
+
+    const $ = id => document.getElementById(id);
+    const answers = Array(questions.length).fill(null);
+    let ccid = '';
+    let current = 0;
+    let pending = false;
+    let submitted = false;
+    const screens = ['intro','question-screen','finish'];
+    const storageKey = 'edpy501-session10-mixed-methods-v1';
+    function saveProgress() {
+      try { localStorage.setItem(storageKey, JSON.stringify({ccid,answers,current})); return true; }
+      catch { return false; }
+    }
+    try {
+      const saved = JSON.parse(localStorage.getItem(storageKey) || 'null');
+      if (saved && /^[A-Za-z0-9._-]{2,40}$/.test(saved.ccid) &&
+          Array.isArray(saved.answers) && saved.answers.length === questions.length &&
+          saved.answers.every(a => a === null || (Number.isInteger(a) && a >= 0 && a < 4))) {
+        ccid = saved.ccid;
+        saved.answers.forEach((a,i) => { answers[i] = a; });
+        current = Number.isInteger(saved.current) ? Math.max(0,Math.min(saved.current,questions.length-1)) : 0;
+        $('ccid').value = ccid;
+        $('resume-note').hidden = false;
+      }
+    } catch { /* Storage may be unavailable or contain invalid data. */ }
+
+    function show(id) {
+      screens.forEach(screen => { $(screen).hidden = screen !== id; });
+      window.scrollTo({top:0,behavior:'instant'});
+      const focusTarget = id === 'question-screen' ? $('question-title') : id === 'finish' ? $('finish-title') : $('intro-title');
+      focusTarget.setAttribute('tabindex','-1');
+      focusTarget.focus({preventScroll:true});
+    }
+    function renderQuestion() {
+      const q = questions[current];
+      const recorded = answers[current];
+      $('number').textContent = `Question ${current + 1} of ${questions.length}`;
+      $('progress-label').textContent = `${answers.filter(a => a !== null).length} answered`;
+      $('progress-fill').style.width = `${(answers.filter(a => a !== null).length / questions.length) * 100}%`;
+      $('topic').textContent = q.topic;
+      $('question-title').textContent = q.prompt;
+      const choices = $('choices');
+      choices.replaceChildren();
+      q.options.forEach((option,i) => {
+        const label = document.createElement('label');
+        label.className = 'choice';
+        if (recorded !== null) {
+          label.classList.add('locked');
+          if (i === q.correct) label.classList.add('correct');
+        }
+        const input = document.createElement('input');
+        input.type = 'radio'; input.name = 'answer'; input.value = String(i);
+        input.checked = recorded === i; input.disabled = recorded !== null;
+        const letter = document.createElement('b'); letter.textContent = letters[i] + '.';
+        const text = document.createElement('span'); text.textContent = option;
+        label.append(input,letter,text);
+        choices.append(label);
+      });
+      $('feedback').hidden = recorded === null;
+      if (recorded !== null) {
+        $('feedback').classList.toggle('incorrect', recorded !== q.correct);
+        $('feedback').replaceChildren();
+        const heading = document.createElement('strong');
+        heading.textContent = recorded === q.correct ? 'Correct.' : `The correct answer is ${letters[q.correct]}. ${q.options[q.correct]}`;
+        const explanation = document.createElement('p'); explanation.textContent = q.explanation;
+        $('feedback').append(heading,explanation);
+      }
+      $('check').hidden = recorded !== null;
+      $('next').hidden = recorded === null;
+      $('next').textContent = current === questions.length - 1 ? 'Review and submit' : 'Next question';
+      $('previous').hidden = current === 0;
+      $('question-status').textContent = '';
+      show('question-screen');
+    }
+    function renderFinish() {
+      $('results').replaceChildren();
+      questions.forEach((q,i) => {
+        const item = document.createElement('li');
+        const heading = document.createElement('strong'); heading.textContent = `${i + 1}. ${q.prompt}`;
+        const selected = document.createElement('span'); selected.textContent = `Your answer: ${letters[answers[i]]}. ${q.options[answers[i]]}`;
+        const correct = document.createElement('span'); correct.textContent = `Correct answer: ${letters[q.correct]}. ${q.options[q.correct]}`;
+        item.append(heading,selected,correct);
+        $('results').append(item);
+      });
+      show('finish');
+    }
+    $('begin').addEventListener('click', () => {
+      const value = $('ccid').value.trim();
+      if (!/^[A-Za-z0-9._-]{2,40}$/.test(value)) {
+        $('intro-status').textContent = 'Enter your CCID without spaces or @ualberta.ca.';
+        $('ccid').focus();
+        return;
+      }
+      if (ccid && value !== ccid) answers.fill(null);
+      ccid = value;
+      const firstUnanswered = answers.findIndex(a => a === null);
+      current = firstUnanswered < 0 ? questions.length - 1 : firstUnanswered;
+      saveProgress();
+      if (firstUnanswered < 0) renderFinish(); else renderQuestion();
+    });
+    $('ccid').addEventListener('keydown', e => { if (e.key === 'Enter') $('begin').click(); });
+    $('clear-saved').addEventListener('click', () => {
+      answers.fill(null); ccid = ''; current = 0;
+      $('ccid').value = ''; $('resume-note').hidden = true;
+      try { localStorage.removeItem(storageKey); } catch {}
+      $('intro-status').textContent = 'Saved progress cleared from this browser.';
+    });
+    $('check').addEventListener('click', () => {
+      const choice = document.querySelector('#choices input:checked');
+      if (!choice) { $('question-status').textContent = 'Choose one answer first.'; return; }
+      answers[current] = Number(choice.value);
+      saveProgress();
+      renderQuestion();
+      $('feedback').scrollIntoView({block:'nearest'});
+    });
+    $('next').addEventListener('click', () => {
+      if (current === questions.length - 1) renderFinish();
+      else { current++; saveProgress(); renderQuestion(); }
+    });
+    $('previous').addEventListener('click', () => { if (current > 0) { current--; renderQuestion(); } });
+    $('review-last').addEventListener('click', () => { current = questions.length - 1; renderQuestion(); });
+
+    function setSubmissionStatus(message,error=false) {
+      $('submit-status').textContent = message;
+      $('submit-status').hidden = false;
+      $('submit-status').classList.toggle('error',error);
+    }
+    window.addEventListener('message', event => {
+      if (!pending || event.source !== $('submission-frame').contentWindow) return;
+      if (!['https://submit.jotform.com','https://form.jotform.com'].includes(event.origin)) return;
+      if (event.data?.action !== 'submission-completed' || event.data?.formID !== formId) return;
+      pending = false; submitted = true;
+      try { localStorage.removeItem(storageKey); } catch {}
+      $('submit').disabled = true;
+      $('submit').textContent = 'Submitted';
+      setSubmissionStatus('Submitted successfully. Your instructor has received your CCID and all ten responses.');
+    });
+    $('submit').addEventListener('click', () => {
+      if (pending || submitted) return;
+      if (answers.some(a => a === null) || !ccid) {
+        setSubmissionStatus('Complete all ten questions and enter your CCID before submitting.',true);
+        return;
+      }
+      const correct = answers.filter((a,i) => a === questions[i].correct).length;
+      const lines = ['EDPY 501 — Session 10 mixed methods procedures activity',`Completed: ${new Date().toISOString()}`,`Correct selections: ${correct} of ${questions.length}`,''];
+      questions.forEach((q,i) => {
+        lines.push(`${i + 1}. ${q.prompt}`);
+        lines.push(`Student response: ${letters[answers[i]]}. ${q.options[answers[i]]}`);
+        lines.push(`Correct response: ${letters[q.correct]}. ${q.options[q.correct]}`);
+        lines.push('');
+      });
+      $('send-ccid').value = ccid;
+      $('send-responses').value = lines.join('\n');
+      pending = true;
+      $('submit').disabled = true;
+      $('submit').textContent = 'Submitting…';
+      setSubmissionStatus('Submitting your responses. Please wait for confirmation.');
+      $('submission-form').submit();
+      window.setTimeout(() => {
+        if (!pending) return;
+        pending = false;
+        $('submit').disabled = false;
+        $('submit').textContent = 'Try submission again';
+        setSubmissionStatus('Receipt could not be confirmed. Keep this page open and ask your instructor to check before trying again, to avoid a duplicate.',true);
+      },30000);
+    });
+  })();
+  </script>
+</body>
+</html>
