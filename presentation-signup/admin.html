@@ -1,0 +1,13 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Download presentation schedule</title>
+<style>body{font:18px/1.5 Arial,sans-serif;background:#f8f8f3;color:#173326;margin:0}main{max-width:700px;margin:6vh auto;padding:2rem;background:white;border-top:7px solid #d8ae41}h1{font-size:1.7rem}input,button{font:inherit;padding:.65rem}input{width:100%;box-sizing:border-box}button{background:#13462f;color:white;border:0;border-radius:6px;cursor:pointer;margin-top:1rem}#status{min-height:2rem}</style></head><body><main><h1>Presentation schedule export</h1><p>For the instructor only. Enter the private export token to download the current bookings as an Excel workbook. The token is used for this request and is not saved in the browser.</p><label for="token">Export token</label><input id="token" type="password" autocomplete="off"><button id="download">Download Excel file</button><p id="status" role="status"></p></main>
+<script src="config.js"></script><script>
+document.getElementById('download').addEventListener('click',async()=>{
+  const token=document.getElementById('token').value, status=document.getElementById('status');
+  const api=(window.EDPY501_SIGNUP_API||'').replace(/\/$/,'');
+  if(!api||!token){status.textContent='The export service or token is missing.';return;}
+  status.textContent='Preparing Excel file…';
+  try{const response=await fetch(api+'/admin/export.xlsx',{headers:{Authorization:'Bearer '+token},cache:'no-store'});
+    if(!response.ok){status.textContent=response.status===401?'Token not accepted.':'Export unavailable.';return;}
+    const url=URL.createObjectURL(await response.blob());const a=document.createElement('a');a.href=url;a.download='EDPY501_presentation_schedule.xlsx';a.click();setTimeout(()=>URL.revokeObjectURL(url),30000);status.textContent='Excel file downloaded.';
+  }catch{status.textContent='Could not connect to the export service.';}
+});</script></body></html>
